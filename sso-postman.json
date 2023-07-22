@@ -1,0 +1,211 @@
+{
+	"info": {
+		"_postman_id": "b7ce336b-8d9a-4ea3-ac27-d21c1e082d00",
+		"name": "sso-server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "18868167"
+	},
+	"item": [
+		{
+			"name": "Sign-Up",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"user1@test.com\",\n\t\"first_name\": \"user1\",\n\t\"password\": \"Passoword\"\n}"
+				},
+				"url": "{{url}}/signup/"
+			},
+			"response": []
+		},
+		{
+			"name": "Login admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"pm.globals.set('admin-token', response.access);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"admin@test.com\",\n\t\"password\": \"1234\"\n}"
+				},
+				"url": "{{url}}/api/token/"
+			},
+			"response": []
+		},
+		{
+			"name": "Login user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"pm.globals.set('user-token', response.access);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"user1@test.com\",\n\t\"password\": \"Passoword\"\n}"
+				},
+				"url": "{{url}}/api/token/"
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Detail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{user-token}}"
+					}
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": "{{url}}/user/"
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch all Services",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{admin-token}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "{{url}}/service/"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Connection",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{admin-token}}"
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"user\": \"0c5ff039-5979-49c4-81b8-98a7449adaf9\",\n\t\"service\": 3\n}"
+				},
+				"url": "{{url}}/connection/new/"
+			},
+			"response": []
+		},
+		{
+			"name": "List and Create Services",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{admin-token}}"
+					}
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Service1\",\n\t\"callback_url\": \"http://127.0.0.1:8001/user/create/\"\n}"
+				},
+				"url": "{{url}}/service/"
+			},
+			"response": []
+		},
+		{
+			"name": "Access Protected Resource",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{user-token}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "{{url-target}}/api/protected-resource/"
+			},
+			"response": []
+		}
+	]
+}
