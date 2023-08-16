@@ -56,9 +56,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'service.middleware.RateLimiterMiddleware',
 ]
 
 ROOT_URLCONF = 'sso.urls'
+RATE_LIMIT = 60  # requests per minute
 
 TEMPLATES = [
     {
